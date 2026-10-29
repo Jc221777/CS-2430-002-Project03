@@ -76,14 +76,17 @@ public class Main {
 
 
     /**
-     * Finds the best subset of experiments using brute force.
-     * Checks every possible combination of experiments and chooses the best.
+     * Finds the best subsets of experiments using brute force.
+     * Checks every possible subset of experiments and chooses the {@code bestSetCount} best.
      *
-     * @return The optimal set of experiments.
+     * @param experiments The set of experiments to choose from.
+     * @param maxWeight The maximum weight of a subset of experiments.
+     * @param bestSetCount The number of subsets to return.
+     * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
      */
-    static public Experiment[][] bruteForce(final Experiment[] experiments, final short bestSetCount) {
+    static public Experiment[][] bruteForce(final Experiment[] experiments, final short maxWeight, final short bestSetCount) {
         final short subsetCount = (short)Math.powExact(2, experiments.length);
-        Experiment[][] bestExperimentSet = new Experiment[bestSetCount][];
+        Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
 
         // Iterate over all subsets
@@ -102,24 +105,25 @@ public class Main {
                 weight += experiment.weight;
                 rating += experiment.rating;
             }
-            if (weight > 700) continue;
+            if (weight > maxWeight) continue;
             // Find the worst of the best experiments
             int worstIndex = 0;
-            for (int i = 0; i < bestExperimentSet.length; ++i) {
+            for (int i = 0; i < bestExperimentSets.length; ++i) {
                 if (bestRatings[worstIndex] <= bestRatings[i]) continue;
                 worstIndex = i;
             }
             // If this experiment is better than the worst, replace the worst
             if (rating <= bestRatings[worstIndex]) continue;
             bestRatings[worstIndex] = rating;
-            bestExperimentSet[worstIndex] = subset;
+            bestExperimentSets[worstIndex] = subset;
         }
 
-        return bestExperimentSet;
+        return bestExperimentSets;
     }
 
     /**
      * Prints an array of {@code Experiments}.
+     *
      * @param array The array to print.
      */
     private void printResult(Experiment[] array) {
@@ -140,7 +144,7 @@ public class Main {
     void main() {
         System.out.println("Brute Force");
         System.out.println("------------------------------------------");
-        printResult(bruteForce(EXPERIMENTS, (short)1)[0]);
+        printResult(bruteForce(EXPERIMENTS, (short)700, (short)1)[0]);
         System.out.println();
         System.out.println("Weight");
         System.out.println("------------------------------------------");
