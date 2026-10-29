@@ -68,7 +68,10 @@ public class Main {
         System.out.println(sb);
     }
 
-    void main() {
+    void run() {
         printArray(bruteForce());
     }
+  //public static void main(String[] args) {
+	//new Main().run();
+//}
 }
