@@ -14,8 +14,8 @@ public class Main {
         YEAST_FERMENTATION
     }
 
-    final private short[] WEIGHTS = new short[]{36, 264, 188, 203, 104, 7, 90, 65, 75, 170, 80, 27};
-    final private short[] RATINGS = new short[]{5, 9, 6, 8, 8, 4, 2, 8, 5, 9, 7, 4};
+    final static private short[] WEIGHTS = new short[]{36, 264, 188, 203, 104, 7, 90, 65, 75, 170, 80, 27};
+    final static private short[] RATINGS = new short[]{5, 9, 6, 8, 8, 4, 2, 8, 5, 9, 7, 4};
 
 
     /**
@@ -24,7 +24,7 @@ public class Main {
      *
      * @return The optimal set of experiments.
      */
-    private Experiment[] bruteForce() {
+    static private Experiment[] bruteForce() {
         final Experiment[] experiments = Experiment.values();
         final short subsetCount = (short)Math.powExact(2, experiments.length);
         short bestRating = 0;
@@ -55,23 +55,19 @@ public class Main {
         return bestSubset;
     }
 
-
     /**
      * Prints an array.
      * @param array The array to print.
      * @param <T> The type of values in the array.
      */
-    private <T> void printArray(T[] array) {
+    static private <T> void printArray(T[] array) {
         StringBuilder sb = new StringBuilder();
         for (T t : array)
             if (t != null) sb.append(t).append(" ");
         System.out.println(sb);
     }
 
-    void run() {
+    static void main() {
         printArray(bruteForce());
     }
-  //public static void main(String[] args) {
-	//new Main().run();
-//}
 }
