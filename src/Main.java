@@ -2,19 +2,19 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class Main {
-    public record Experiment(String name, short weight, short rating) {
-        final static Experiment CLOUD_PATTERNS            = new Experiment("Cloud Patterns",            (short)36,  (short)5);
-        final static Experiment SOLAR_FLARES              = new Experiment("Solar Flares",              (short)264, (short)9);
-        final static Experiment SOLAR_POWER               = new Experiment("Solar Power",               (short)188, (short)6);
-        final static Experiment BINARY_STARS              = new Experiment("Binary Stars",              (short)203, (short)8);
-        final static Experiment RELATIVITY                = new Experiment("Relativity",                (short)104, (short)8);
-        final static Experiment SEED_VIABILITY            = new Experiment("Seed Viability",            (short)7,   (short)4);
-        final static Experiment SUN_SPOTS                 = new Experiment("Sun Spots",                 (short)90,  (short)2);
-        final static Experiment MICE_TUMORS               = new Experiment("Mice Tumors",               (short)65,  (short)8);
-        final static Experiment MICROGRAVITY_PLANT_GROWTH = new Experiment("Microgravity Plant Growth", (short)75,  (short)5);
-        final static Experiment MICROMETEORITES           = new Experiment("Micrometeorites",           (short)170, (short)9);
-        final static Experiment COSMIC_RAYS               = new Experiment("Cosmic Rays",               (short)80,  (short)7);
-        final static Experiment YEAST_FERMENTATION        = new Experiment("Yeast Fermentation",        (short)27,  (short)4);
+    public record Experiment(String name, int weight, int rating) {
+        final static Experiment CLOUD_PATTERNS            = new Experiment("Cloud Patterns",            36,  5);
+        final static Experiment SOLAR_FLARES              = new Experiment("Solar Flares",              264, 9);
+        final static Experiment SOLAR_POWER               = new Experiment("Solar Power",               188, 6);
+        final static Experiment BINARY_STARS              = new Experiment("Binary Stars",              203, 8);
+        final static Experiment RELATIVITY                = new Experiment("Relativity",                104, 8);
+        final static Experiment SEED_VIABILITY            = new Experiment("Seed Viability",            7,   4);
+        final static Experiment SUN_SPOTS                 = new Experiment("Sun Spots",                 90,  2);
+        final static Experiment MICE_TUMORS               = new Experiment("Mice Tumors",               65,  8);
+        final static Experiment MICROGRAVITY_PLANT_GROWTH = new Experiment("Microgravity Plant Growth", 75,  5);
+        final static Experiment MICROMETEORITES           = new Experiment("Micrometeorites",           170, 9);
+        final static Experiment COSMIC_RAYS               = new Experiment("Cosmic Rays",               80,  7);
+        final static Experiment YEAST_FERMENTATION        = new Experiment("Yeast Fermentation",        27,  4);
 
         public double ratio() {
             return (double) rating / weight;
@@ -84,23 +84,23 @@ public class Main {
      * @param bestSetCount The number of subsets to return.
      * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
      */
-    static public Experiment[][] bruteForce(final Experiment[] experiments, final short maxWeight, final short bestSetCount) {
-        final short subsetCount = (short)Math.powExact(2, experiments.length);
+    static public Experiment[][] bruteForce(final Experiment[] experiments, final int maxWeight, final int bestSetCount) {
+        final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
 
         // Iterate over all subsets
-        short tracker = 0;
+        int tracker = 0;
         while (++tracker < subsetCount) {
             // Gather tracked subset
             Experiment[] subset = new Experiment[Long.bitCount(tracker)];
-            for (short i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
+            for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
                 if ((tracker & i) == 0) continue;
                 subset[++maxSubsetIndex] = experiments[j];
             }
             // Evaluate this subset
-            short weight = 0;
-            short rating = 0;
+            int weight = 0;
+            int rating = 0;
             for (Experiment experiment : subset) {
                 weight += experiment.weight;
                 rating += experiment.rating;
@@ -144,7 +144,7 @@ public class Main {
     void main() {
         System.out.println("Brute Force");
         System.out.println("------------------------------------------");
-        printResult(bruteForce(EXPERIMENTS, (short)700, (short)1)[0]);
+        printResult(bruteForce(EXPERIMENTS, 700, 1)[0]);
         System.out.println();
         System.out.println("Weight");
         System.out.println("------------------------------------------");
