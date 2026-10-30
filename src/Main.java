@@ -98,7 +98,6 @@ public class Main {
         return bestSubset;
     }
 
-
     /**
      * Prints an array.
      * @param array The array to print.
