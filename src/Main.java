@@ -1,17 +1,17 @@
 public class Main {
-    public record Experiment(String name, short weight, short rating) {
-        final static Experiment CLOUD_PATTERNS            = new Experiment("CLOUD_PATTERNS",            (short)36,  (short)5);
-        final static Experiment SOLAR_FLARES              = new Experiment("SOLAR_FLARES",              (short)264, (short)9);
-        final static Experiment SOLAR_POWER               = new Experiment("SOLAR_POWER",               (short)188, (short)6);
-        final static Experiment BINARY_STARS              = new Experiment("BINARY_STARS",              (short)203, (short)8);
-        final static Experiment RELATIVITY                = new Experiment("RELATIVITY",                (short)104, (short)8);
-        final static Experiment SEED_VIABILITY            = new Experiment("SEED_VIABILITY",            (short)7,   (short)4);
-        final static Experiment SUN_SPOTS                 = new Experiment("SUN_SPOTS",                 (short)90,  (short)2);
-        final static Experiment MICE_TUMORS               = new Experiment("MICE_TUMORS",               (short)65,  (short)8);
-        final static Experiment MICROGRAVITY_PLANT_GROWTH = new Experiment("MICROGRAVITY_PLANT_GROWTH", (short)75,  (short)5);
-        final static Experiment MICROMETEORITES           = new Experiment("MICROMETEORITES",           (short)170, (short)9);
-        final static Experiment COSMIC_RAYS               = new Experiment("COSMIC_RAYS",               (short)80,  (short)7);
-        final static Experiment YEAST_FERMENTATION        = new Experiment("YEAST_FERMENTATION",        (short)27,  (short)4);
+    public record Experiment(String name, int weight, int rating) {
+        final static Experiment CLOUD_PATTERNS            = new Experiment("CLOUD_PATTERNS",            36,  5);
+        final static Experiment SOLAR_FLARES              = new Experiment("SOLAR_FLARES",              264, 9);
+        final static Experiment SOLAR_POWER               = new Experiment("SOLAR_POWER",               188, 6);
+        final static Experiment BINARY_STARS              = new Experiment("BINARY_STARS",              203, 8);
+        final static Experiment RELATIVITY                = new Experiment("RELATIVITY",                104, 8);
+        final static Experiment SEED_VIABILITY            = new Experiment("SEED_VIABILITY",            7,   4);
+        final static Experiment SUN_SPOTS                 = new Experiment("SUN_SPOTS",                 90,  2);
+        final static Experiment MICE_TUMORS               = new Experiment("MICE_TUMORS",               65,  8);
+        final static Experiment MICROGRAVITY_PLANT_GROWTH = new Experiment("MICROGRAVITY_PLANT_GROWTH", 75,  5);
+        final static Experiment MICROMETEORITES           = new Experiment("MICROMETEORITES",           170, 9);
+        final static Experiment COSMIC_RAYS               = new Experiment("COSMIC_RAYS",               80,  7);
+        final static Experiment YEAST_FERMENTATION        = new Experiment("YEAST_FERMENTATION",        27,  4);
 
         @Override
         public String toString() {
@@ -43,23 +43,23 @@ public class Main {
      * @param bestSetCount The number of subsets to return.
      * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
      */
-    static public Experiment[][] bruteForce(final Experiment[] experiments, final short maxWeight, final short bestSetCount) {
-        final short subsetCount = (short)Math.powExact(2, experiments.length);
+    static public Experiment[][] bruteForce(final Experiment[] experiments, final int maxWeight, final int bestSetCount) {
+        final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
 
         // Iterate over all subsets
-        short tracker = 0;
+        int tracker = 0;
         while (++tracker < subsetCount) {
             // Gather tracked subset
             Experiment[] subset = new Experiment[Long.bitCount(tracker)];
-            for (short i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
+            for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
                 if ((tracker & i) == 0) continue;
                 subset[++maxSubsetIndex] = experiments[j];
             }
             // Evaluate this subset
-            short weight = 0;
-            short rating = 0;
+            int weight = 0;
+            int rating = 0;
             for (Experiment experiment : subset) {
                 weight += experiment.weight;
                 rating += experiment.rating;
@@ -94,6 +94,6 @@ public class Main {
     }
 
     static void main() {
-        printArray(bruteForce(EXPERIMENTS, (short)700, (short)1)[0]);
+        printArray(bruteForce(EXPERIMENTS, 700, 1)[0]);
     }
 }
