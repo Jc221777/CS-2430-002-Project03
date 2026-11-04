@@ -37,12 +37,16 @@ public class TestBruteForce {
 
     @Test
     void canMatchWeightLimit() {
-
-    }
-
-    @Test
-    void checksAllSubsets() {
-        int expected = 4096;
-        Assertions.assertEquals(expected, Main.bruteForce(Main.EXPERIMENTS, Integer.MAX_VALUE, expected).length);
+        Main.Experiment[] expected = new Main.Experiment[]{
+                Main.Experiment.CLOUD_PATTERNS,
+                Main.Experiment.SOLAR_POWER
+        };
+        int expectedWeight = Main.Experiment.CLOUD_PATTERNS.weight() + Main.Experiment.SOLAR_POWER.weight();
+        Main.Experiment[] input = new Main.Experiment[]{
+                Main.Experiment.CLOUD_PATTERNS,
+                Main.Experiment.SOLAR_FLARES,
+                Main.Experiment.SOLAR_POWER
+        };
+        Assertions.assertArrayEquals(expected, Main.bruteForce(input, expectedWeight, 1)[0]);
     }
 }
