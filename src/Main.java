@@ -3,19 +3,26 @@ import java.util.Comparator;
 
 public class Main {
     public record Experiment(String name, int weight, int rating) {
-        final static Experiment CLOUD_PATTERNS            = new Experiment("Cloud Patterns",            36,  5);
-        final static Experiment SOLAR_FLARES              = new Experiment("Solar Flares",              264, 9);
-        final static Experiment SOLAR_POWER               = new Experiment("Solar Power",               188, 6);
-        final static Experiment BINARY_STARS              = new Experiment("Binary Stars",              203, 8);
-        final static Experiment RELATIVITY                = new Experiment("Relativity",                104, 8);
-        final static Experiment SEED_VIABILITY            = new Experiment("Seed Viability",            7,   4);
-        final static Experiment SUN_SPOTS                 = new Experiment("Sun Spots",                 90,  2);
-        final static Experiment MICE_TUMORS               = new Experiment("Mice Tumors",               65,  8);
-        final static Experiment MICROGRAVITY_PLANT_GROWTH = new Experiment("Microgravity Plant Growth", 75,  5);
-        final static Experiment MICROMETEORITES           = new Experiment("Micrometeorites",           170, 9);
-        final static Experiment COSMIC_RAYS               = new Experiment("Cosmic Rays",               80,  7);
-        final static Experiment YEAST_FERMENTATION        = new Experiment("Yeast Fermentation",        27,  4);
-
+        final static Experiment CLOUD_PATTERNS             = new Experiment("Cloud Patterns",               36,  5);
+        final static Experiment SOLAR_FLARES               = new Experiment("Solar Flares",                 264, 9);
+        final static Experiment SOLAR_POWER                = new Experiment("Solar Power",                  188, 6);
+        final static Experiment BINARY_STARS               = new Experiment("Binary Stars",                 203, 8);
+        final static Experiment RELATIVITY                 = new Experiment("Relativity",                   104, 8);
+        final static Experiment SEED_VIABILITY             = new Experiment("Seed Viability",               7,   4);
+        final static Experiment SUN_SPOTS                  = new Experiment("Sun Spots",                    90,  2);
+        final static Experiment MICE_TUMORS                = new Experiment("Mice Tumors",                  65,  8);
+        final static Experiment MICROGRAVITY_PLANT_GROWTH  = new Experiment("Microgravity Plant Growth",    75,  5);
+        final static Experiment MICROMETEORITES            = new Experiment("Micrometeorites",              170, 9);
+        final static Experiment COSMIC_RAYS_PRIMARY_BAND   = new Experiment("Cosmic Rays (Primary Band)",   80,  7);
+        final static Experiment COSMIC_RAYS_SECONDARY_BAND = new Experiment("Cosmic Rays (Secondary Band)", 10,  5);
+        final static Experiment YEAST_FERMENTATION         = new Experiment("Yeast Fermentation",           27,  4);
+        
+        public boolean isSolar() {
+            return this == SOLAR_FLARES ||
+                   this == SOLAR_POWER ||
+                   this == SUN_SPOTS;
+        }
+        
         public double ratio() {
             return (double) rating / weight;
         }
@@ -37,7 +44,8 @@ public class Main {
             Experiment.MICE_TUMORS,
             Experiment.MICROGRAVITY_PLANT_GROWTH,
             Experiment.MICROMETEORITES,
-            Experiment.COSMIC_RAYS,
+            Experiment.COSMIC_RAYS_PRIMARY_BAND,
+            Experiment.COSMIC_RAYS_SECONDARY_BAND,
             Experiment.YEAST_FERMENTATION
     };
 
@@ -59,16 +67,52 @@ public class Main {
 
     	int totalWeight = 0;
     	int selectedCount = 0;
+    	int solarCount = 0;
+    	
+    	boolean hasSeed = false;
+    	boolean hasYeast = false;
+    	boolean hasPrimaryBand = false;
 
     	for (Experiment experiment : sorted) {
-
+    		
+    		if (experiment == Experiment.COSMIC_RAYS_SECONDARY_BAND) {
+    			continue;
+    		}
+    		
     		int weight = experiment.weight;
+    		
+    		if ((experiment == Experiment.YEAST_FERMENTATION && hasSeed) || (experiment == Experiment.SEED_VIABILITY && hasYeast)) {
+    			weight -= 7;
+    		}
 
-    		if (totalWeight + weight <= 700) {
+    		if (totalWeight + weight <= 700 && (!experiment.isSolar() || solarCount < 2)) {
+    			
     			selected[selectedCount++] = experiment;
             	totalWeight += weight;
-    		}
+    			
+    			if (experiment == Experiment.YEAST_FERMENTATION) {
+    				hasYeast = true;
+    			}
+    			
+    			if (experiment == Experiment.SEED_VIABILITY) {
+    				hasSeed = true;
+    			}
+    			
+    			if (experiment == Experiment.COSMIC_RAYS_PRIMARY_BAND) {
+    				hasPrimaryBand = true;
+    			}
+    			
+    			if (experiment.isSolar()) {
+    				solarCount++;
+    			}
+    	}
+    		
     }
+    	if (hasPrimaryBand && totalWeight + 10 <= 700) {
+    		
+    		selected[selectedCount++] = Experiment.COSMIC_RAYS_SECONDARY_BAND;
+    		totalWeight += Experiment.COSMIC_RAYS_SECONDARY_BAND.weight;
+    		}
 
     	return Arrays.copyOf(selected, selectedCount);
 }
@@ -127,13 +171,24 @@ public class Main {
      * @param array The array to print.
      */
     private void printResult(Experiment[] array) {
+    	
     	int total_weight = 0;
     	int total_rating = 0;
+    	
+    	boolean hasSeed = Arrays.asList(array).contains(Experiment.SEED_VIABILITY);
+    	
         for (Experiment t : array) {
+        	
+        	int weight = t.weight;
+        	
+        	if (t == Experiment.YEAST_FERMENTATION && hasSeed) {
+        		weight -= 7;
+        	}
+        	
         	System.out.print(t.name);
-        	System.out.print(" (Weight: " + t.weight);
+        	System.out.print(" (Weight: " + weight);
         	System.out.println(" | Rating: " + t.rating + ")");
-        	total_weight += t.weight;
+        	total_weight += weight;
         	total_rating += t.rating;
         }
         System.out.println();
