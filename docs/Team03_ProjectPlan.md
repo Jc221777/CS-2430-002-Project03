@@ -1,105 +1,72 @@
-# **CSIS 2430 —  Project Plan (Plan + Trace)** 
+# CSIS 2430 — Project Plan (Plan + Trace)
 
-Example for a team project (Projects 1–4). Update at least twice per project; for each “Done” task, include an evidence pointer. 
+Example for a team project (Projects 1–4). Update at least twice per project; for each "Done" task, include an evidence pointer.
 
-## **1) Project Information** 
+## 1) Project Information
 
-- Course / Term: CSIS 2430 
+- Course / Term: CSIS 2430
+- Project: Project 1 (Team)
+- Team Name: Team 03
+- Start Date: 10/26/2026
+- Due Date: 11/13/2026
+- Checkpoint Date (mid-project): 2026-02-13
 
-- Project: Project 1 (Team) 
+## 2) Team & Roles (assigned for this project)
 
-- Team Name: Team 03 
+Roles are assigned per project and rotate between projects.
 
-- Start Date: 10/26/2026 
+| Team Member       | Role (Implementation / Verification / Communications) | Primary Responsibilities (1–2 bullets)                                                       | Availability / Notes |
+| ----------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------- |
+| Tristan Taj       | Implementation Lead                                   | Owns core algorithm implementation; integrates modules; maintains main branch health.        |                      |
+| Thaddeus Schelp   | Verification Lead                                     | Creates test plan; edge cases; validates outputs; documents verification evidence.           |                      |
+| Jasey Christensen | Communications Lead                                   | Assembles report/video; ensures run instructions; tracks deliverables; merges documentation. |                      |
 
-- Due Date: 11/13/2026 
+## 3) Repository & Access (Required for Projects 1–4)
 
-- Checkpoint Date (mid-project): 2026-02-13 
+- Platform: GitHub
+- Repository URL: <https://github.com/Jc221777/CS-2430-002-Project03.git>
+- Instructor invited as viewer by checkpoint?: Yes — invited 10/26/2026
 
-## **2) Team & Roles (assigned for this project)** 
+## 4) Milestones (Timeline)
 
-Roles are assigned per project and rotate between projects. 
+| Milestone                           | Target Date | Owner            | Definition of Done                                                                                                           | Status (NS/IP/D) | Evidence Link / Pointer                                                                                                  |
+| ----------------------------------- | ----------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Repo set up + skeleton running      | 10/26/2026  | Jasey            | Repo created; README run steps; sample I/O runs.                                                                             | D                | [**Commit #1f30263**](https://github.com/Jc221777/CS-2430-002-Project03/commit/1f3026385177e28a71c11fb4478bb7907019321b) |
+| Implement 3 greedy strategies       | 11/02/2026  | Tristan          | Outputs experiments sorted by highest rated, lightest first, and best rating to weight ratio first.                          | D                | [PR#2](https://github.com/Jc221777/CS-2430-002-Project03/pull/2)                                                         |
+| Implement Brute Force algorithm     | 11/02/2026  | Thaddeus         | Outputs the three highest rated subsets out of 4096 possible subsets                                                         | D                | [PR#1](https://github.com/Jc221777/CS-2430-002-Project03/pull/1)                                                         |
+| Implement Comparison summary output | 11/09/2026  | Thaddues,Tristan | Add output summarizing all 3 greedy strategies, output of the bruteforce                                                     | IP               |                                                                                                                          |
+| Implement change request            | 11/06/2026  | Thaddeus,Tristan | Add changes listed in the Project 3 change request .pdf                                                                      | IP               |                                                                                                                          |
+| Implement Dynamic Programming       | 11/13/2026  | Thaddeus         | Implement a method or class that takes our problem and splits it into little problems that ultimately solve our main problem | IP               |                                                                                                                          |
+| Complete team checkpoint            | 11/06/2026  | Jasey            | Complete all required items for the team checkpoint                                                                          | D                | [PR#7](https://github.com/Jc221777/CS-2430-002-Project03/pull/6)                                                         |
+| Complete Team Video                 | 11/13/2026  | Team             | Film and edit video showcasing program                                                                                       | NS               |                                                                                                                          |
+| Complete Team Report                | 11/13/2026  | Team             | Complete team report that answers questions provided in canvas rubric                                                        | NS               |                                                                                                                          |
 
-|Team Member|Role<br>(Implementation /<br>Verification /<br>Communications)|Primary<br>Responsibilities (1–2<br>bullets)|Availability / Notes|
-|---|---|---|---|
-|Tristan Taj|Implementation Lead|Owns core algorithm<br>implementation;<br>integrates modules;<br>maintains main<br>branch health.||
-|Thaddeus Schelp|Verification Lead|Creates test plan;<br>edge cases; validates<br>outputs; documents<br>verification evidence.||
-|Jasey Christensen|Communications<br>Lead|Assembles<br>report/video;<br>ensures run<br>instructions; tracks<br>deliverables; merges<br>documentation.||
+## 5) Task Backlog (Assignments + Status)
 
+| ID  | Task                                                    | Owner    | Due Date   | Status (NS/IP/D) | Evidence Link / Pointer                                                                                                  | Notes / Dependencies |
+| --- | ------------------------------------------------------- | -------- | ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------- |
+| 1   | Create repository                                       | Jasey    | 10/26/2026 | D                | [**Commit #1f30263**](https://github.com/Jc221777/CS-2430-002-Project03/commit/1f3026385177e28a71c11fb4478bb7907019321b) | N/A                  |
+| 2   | Implement algorithm for highest rating first            | Tristan  | 11/02/2026 | D                | [PR#2](https://github.com/Jc221777/CS-2430-002-Project03/pull/2)                                                         | N/A                  |
+| 3   | Implement algorithm for lightest first                  | Tristan  | 11/02/2026 | D                | [PR#2](https://github.com/Jc221777/CS-2430-002-Project03/pull/2)                                                         | N/A                  |
+| 4   | Implement Algorithm for ratio sorting                   | Tristan  | 11/02/2026 | D                | [PR#2](https://github.com/Jc221777/CS-2430-002-Project03/pull/2)                                                         | N/A                  |
+| 5   | Implement Brute Force Algorithm                         | Thaddeus | 11/02/2026 | D                | [PR#1](https://github.com/Jc221777/CS-2430-002-Project03/pull/1)                                                         | N/A                  |
+| 6   | Implement Junit test for the greedy strategies          | Thaddeus | 11/09/2026 | IP               | N/A                                                                                                                      | N/A                  |
+| 7   | Implement Junit tests for brute force strategies        | Thaddues | 11/09/2026 | IP               | N/A                                                                                                                      | N/A                  |
+| 8   | Complete project plan for project checkpoint            | Jasey    | 11/06/2026 | D                | [PR#7](https://github.com/Jc221777/CS-2430-002-Project03/pull/6)                                                         | N/A                  |
+| 9   | Draft UML                                               | Jasey    | 11/06/2026 | D                | [PR#7](https://github.com/Jc221777/CS-2430-002-Project03/pull/6)                                                         | N/A                  |
+| 10  | Design notes drafted                                    | Jasey    | 11/06/2026 | D                | [PR#7](https://github.com/Jc221777/CS-2430-002-Project03/pull/6)                                                         | N/A                  |
+| 11  | Implement change request into the greedy strategies     | Tristan  | 11/09/2026 | IP               | N/A                                                                                                                      | N/A                  |
+| 12  | Implement change request into the brute force algorithm | Thaddeus | 11/09/2026 | D                | [PR#5](https://github.com/Jc221777/CS-2430-002-Project03/pull/5)                                                         | N/A                  |
+| 13  | Complete team report                                    | Team     | 11/13/2026 | NS               | N/A                                                                                                                      | N/A                  |
+| 14  | Complete team video                                     | Team     | 11/13/2026 | NS               | N/A                                                                                                                      | N/A                  |
+| 15  | Implement Dynamic Programming                           | Thaddeus | 11/13/2026 | IP               | N/A                                                                                                                      | N/A                  |
 
+## 6) Verification Plan
 
-- **3) Repository & Access (Required for Projects 1–4)** 
+Thaddeus will be building Junit tests to verify the edge cases and functionality of both the greedy strategies and the brute force strategies
 
-- Platform: GitHub 
+## 7) Risks/Blockers
 
-- Repository URL: https://github.com/Jc221777/CS-2430-002-Project03.git 
-
-- Instructor invited as viewer by checkpoint?: Yes — invited 10/26/2026 
-
-**4) Milestones (Timeline)** 
-
-|Milestone|Target Date|Owner|Definition of<br>Done|Status<br>(NS/IP/D)|Evidence<br>Link /|
-|---|---|---|---|---|---|
-||||||Pointer|
-|Repo set up+|10/26/2026|Jasey|Repo created;|D|**Commit**|
-
-
-
-|skeleton<br>running|||README run<br>steps; sample<br>I/O runs.||**#1f30263**|
-|---|---|---|---|---|---|
-|Implement 3<br>greedy<br>strategies|11/02/2026|Tristan|Outputs<br>experiments<br>sorted by<br>highest rated,<br>lightest first,<br>and best<br>rating to<br>weight ratio<br>first.|D|PR#2|
-|Implement<br>Brute Force<br>algorithm|11/02/2026|Thaddeus|Outputs the<br>three highest<br>rated subsets<br>out of 4096<br>possible<br>subsets|D|PR#1|
-|Implement<br>Comparison<br>summary<br>output|11/09/2026|Thaddues,Tristan|Add output<br>summarizing<br>all 3 greedy<br>strategies,<br>output of the<br>bruteforce|IP||
-|Implement<br>change<br>request|11/06/2026|Thaddeus,Tristan|Add changes<br>listed in the<br>Project 3<br>change<br>request .pdf|IP||
-|Implement<br>Dynamic<br>Programming|11/13/2026|Thaddeus|Implement a<br>method or<br>class that<br>takes our<br>problem and<br>splits it into<br>little<br>problems<br>that<br>ultimately<br>solve our<br>main<br>problem|IP||
-|Complete<br>team<br>checkpoint|11/06/2026|Jasey|Complete all<br>required<br>items for the<br>team<br>checkpoint|IP||
-|Complete<br>Team Video|11/13/2026|Team|Film and edit<br>video<br>showcasing|NS||
-
-
-
-||||program||
-|---|---|---|---|---|
-|Complete|11/13/2026|Team|Complete|NS|
-|Team Report|||team report<br>that answers<br>questions<br>provided in<br>canvas rubric||
-
-
-
-## **5) Task Backlog (Assignments + Status)** 
-
-|ID|Task|Owner|Due Date|Status<br>(NS/IP/D)|Evidence<br>Link /<br>Pointer|Notes /<br>Dependencies|
-|---|---|---|---|---|---|---|
-|1|Create<br>repository|Jasey|10/26/2026|D|**Commit**<br>**#1f30263**|N/A|
-|2|Implement<br>algorithm for<br>highest rating<br>first|Tristan|11/02/2026|D|PR#2|N/A|
-|3|Implement<br>algorithm for<br>lightest first|Tristan|11/02/2026|D|PR#2|N/A|
-|4|Implement<br>Algorithm for<br>ratio sorting|Tristan|11/02/2026|D|PR#2|N/A|
-|5|Implement<br>Brute Force<br>Algorithm|Thaddeus|11/02/2026|D|PR#1|N/A|
-|6|Implement<br>Junit test for<br>the greedy<br>strategies|Thaddeus|11/09/2026|IP|N/A|N/A|
-|7|Implement<br>Junit tests for<br>brute force<br>strategies|Thaddues|11/09/2026|IP|N/A|N/A|
-|8|Complete<br>project plan<br>for project<br>checkpoint|Jasey|11/06/2026|D||N/A|
-|9|Draft UML|Jasey|11/06/2026|D||N/A|
-|10|Design notes<br>drafted|Jasey|11/06/2026|D||N/A|
-|11|Implement<br>change<br>request into<br>the greedy<br>strategies|Tristan|11/09/2026|IP|N/A|N/A|
-|12|Implement<br>change|Thaddeus|11/09/2026|D|PR#5|N/A|
-
-
-
-||request into<br>the brute<br>force<br>algorithm||||||
-|---|---|---|---|---|---|---|
-|13|Complete<br>team report|Team|11/13/2026|NS|N/A|N/A|
-|14|Complete<br>team video|Team|11/13/2026|NS|N/A|N/A|
-|15|Implement<br>Dynamic<br>Programming|Thaddeus|11/13/2026|IP|N/A|N/A|
-
-
-
-## **6) Verification Plan** 
-
-Thaddeus will be building Junit tests to verify the edge cases and functionality of both the greedy strategies and the brute force strategies 
-
-## **7) Risks/Blockers** 
-
-|Risk/Blocker|Impact|Mitigation Plan|Owner|Status|
-|---|---|---|---|---|
-|Making code<br>testable|Med/High|Making sure our<br>code is built in<br>such a way that<br>tests can be<br>applied to it|Thaddeus|Active|
-
-
-
+| Risk / Blocker       | Impact   | Mitigation Plan                                                             | Owner    | Status |
+| -------------------- | -------- | --------------------------------------------------------------------------- | -------- | ------ |
+| Making code testable | Med/High | Making sure our code is built in such a way that tests can be applied to it | Thaddeus | Active |
