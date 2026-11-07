@@ -130,6 +130,14 @@ public class Main {
                                             final int maxWeight,
                                             final int bestSetCount
     ) {
+        // Build the bitset of the experiments which depend on each other
+        int dependentBitset = 0;
+        for (int i = 0; i < experiments.length; ++i)
+            if (experiments[i] == Experiment.COSMIC_RAYS_PRIMARY_BAND
+                    || experiments[i] == Experiment.COSMIC_RAYS_SECONDARY_BAND)
+                dependentBitset |= 1 << i;
+        final boolean useDependentCheck = Long.bitCount(dependentBitset) == 2;
+
         // Build the invalid bitset
         int invalidBitset = 0;
         for (int i = 0; i < experiments.length; ++i)
@@ -137,12 +145,14 @@ public class Main {
                     || experiments[i] == Experiment.SOLAR_POWER
                     || experiments[i] == Experiment.SUN_SPOTS)
                 invalidBitset |= 1 << i;
+        final boolean useInvalidCheck = Long.bitCount(invalidBitset) == 3;
 
         // Build the bitset requiring change
         int conditionBitset = 0;
         for (int i = 0; i < experiments.length; ++i)
             if (experiments[i] == Experiment.YEAST_FERMENTATION || experiments[i] == Experiment.SEED_VIABILITY)
                 conditionBitset |= 1 << i;
+        final boolean useConditionCheck = Long.bitCount(conditionBitset) == 3;
 
         final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
@@ -152,7 +162,11 @@ public class Main {
         // Iterate over all subsets
         int subsetBitset = 0;
         while (++subsetBitset < subsetCount) {
-            if (Long.bitCount(invalidBitset) == 3 && (subsetBitset & invalidBitset) == invalidBitset) continue;
+            if (useDependentCheck) {
+                final int checkSet = subsetBitset & dependentBitset;
+                if (checkSet != 0 && checkSet != dependentBitset) continue;
+            }
+            if (useInvalidCheck && (subsetBitset & invalidBitset) == invalidBitset) continue;
             // Gather tracked subset
             Experiment[] subset = new Experiment[Long.bitCount(subsetBitset)];
             for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
@@ -161,7 +175,7 @@ public class Main {
             }
 
             // Modify experiments based on combinations
-            if (Long.bitCount(conditionBitset) == 2 && (subsetBitset & conditionBitset) == conditionBitset)
+            if (useConditionCheck && (subsetBitset & conditionBitset) == conditionBitset)
                 for (int i = 0; i < subset.length; ++i)
                     if (subset[i] == Experiment.YEAST_FERMENTATION)
                         subset[i] = new Experiment(Experiment.YEAST_FERMENTATION.name, 20, Experiment.YEAST_FERMENTATION.rating);
