@@ -289,7 +289,7 @@ public class Main {
     void main() {
         System.out.println("Brute Force");
         System.out.println("------------------------------------------");
-        printResult(bruteForce(EXPERIMENTS.clone(), 700, 1)[0]);
+        printResult(bruteForce(EXPERIMENTS, 700, 1)[0]);
         System.out.println();
         System.out.println("Dynamic");
         System.out.println("------------------------------------------");
