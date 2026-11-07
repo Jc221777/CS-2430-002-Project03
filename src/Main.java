@@ -162,6 +162,7 @@ public class Main {
                 if (checkSet != 0 && checkSet != dependentBitset) continue;
             }
             if (useInvalidCheck && (subsetBitset & invalidBitset) == invalidBitset) continue;
+
             // Gather tracked subset
             Experiment[] subset = new Experiment[Long.bitCount(subsetBitset)];
             for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
@@ -216,20 +217,54 @@ public class Main {
      * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
      */
     static public Experiment[][] dynamic(final Experiment[] experiments, final int maxWeight, final int bestSetCount) {
+        // Build the bitsets needed for fast checks later
+        int dependentBitset = 0;
+        int invalidBitset = 0;
+        int conditionBitset = 0;
+        for (int i = 0; i < experiments.length; ++i) {
+            if (experiments[i] == Experiment.COSMIC_RAYS_PRIMARY_BAND
+                    || experiments[i] == Experiment.COSMIC_RAYS_SECONDARY_BAND)
+                dependentBitset |= 1 << i;
+            if (experiments[i] == Experiment.SOLAR_FLARES
+                    || experiments[i] == Experiment.SOLAR_POWER
+                    || experiments[i] == Experiment.SUN_SPOTS)
+                invalidBitset |= 1 << i;
+            if (experiments[i] == Experiment.YEAST_FERMENTATION || experiments[i] == Experiment.SEED_VIABILITY)
+                conditionBitset |= 1 << i;
+        }
+        final boolean useDependentCheck = Long.bitCount(dependentBitset) == 2;
+        final boolean useInvalidCheck = Long.bitCount(invalidBitset) == 3;
+        final boolean useConditionCheck = Long.bitCount(conditionBitset) == 2;
+
         final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
+        int[] bestWeights = new int[bestSetCount];
         SuperMask subsets = new SuperMask(subsetCount);
+
         // Iterate over all subsets
-        int tracker = 0;
-        while (++tracker < subsetCount) {
-            if (subsets.match(tracker)) continue;
+        int subsetBitset = 0;
+        while (++subsetBitset < subsetCount) {
+            if (subsets.match(subsetBitset)) continue;
+            if (useDependentCheck) {
+                final int checkSet = subsetBitset & dependentBitset;
+                if (checkSet != 0 && checkSet != dependentBitset) continue;
+            }
+            if (useInvalidCheck && (subsetBitset & invalidBitset) == invalidBitset) continue;
+
             // Gather tracked subset
-            Experiment[] subset = new Experiment[Long.bitCount(tracker)];
+            Experiment[] subset = new Experiment[Long.bitCount(subsetBitset)];
             for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
-                if ((tracker & i) == 0) continue;
+                if ((subsetBitset & i) == 0) continue;
                 subset[++maxSubsetIndex] = experiments[j];
             }
+
+            // Modify experiments based on combinations
+            if (useConditionCheck && (subsetBitset & conditionBitset) == conditionBitset)
+                for (int i = 0; i < subset.length; ++i)
+                    if (subset[i] == Experiment.YEAST_FERMENTATION)
+                        subset[i] = new Experiment(Experiment.YEAST_FERMENTATION.name, 20, Experiment.YEAST_FERMENTATION.rating);
+
             // Evaluate this subset
             int weight = 0;
             int rating = 0;
@@ -238,18 +273,26 @@ public class Main {
                 rating += experiment.rating;
             }
             if (weight > maxWeight) {
-                subsets.add(tracker);
+                subsets.add(subsetBitset);
                 continue;
             }
-            // Find the worst of the best experiments
+
+            // Find the worst rating recorded
+            int worstRating = Integer.MAX_VALUE;
+            for (int bestRating : bestRatings)
+                worstRating = Math.min(worstRating, bestRating);
+            if (rating <= worstRating) continue;
+
+            // Find the heaviest of the worst rated subsets recorded
             int worstIndex = 0;
-            for (int i = 0; i < bestExperimentSets.length; ++i) {
-                if (bestRatings[worstIndex] <= bestRatings[i]) continue;
-                worstIndex = i;
-            }
-            // If this experiment is better than the worst, replace the worst
-            if (rating <= bestRatings[worstIndex]) continue;
+            int worstWeight = 0;
+            for (int i = 0; i < bestWeights.length; ++i)
+                if (bestRatings[i] == worstRating && bestWeights[i] > worstWeight)
+                    worstWeight = bestWeights[worstIndex = i];
+
+            // If this subset is better than the worst, replace the worst
             bestRatings[worstIndex] = rating;
+            bestWeights[worstIndex] = weight;
             bestExperimentSets[worstIndex] = subset;
         }
         return bestExperimentSets;
