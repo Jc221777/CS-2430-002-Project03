@@ -130,29 +130,24 @@ public class Main {
                                             final int maxWeight,
                                             final int bestSetCount
     ) {
-        // Build the bitset of the experiments which depend on each other
+        // Build the bitsets needed for fast checks later
         int dependentBitset = 0;
-        for (int i = 0; i < experiments.length; ++i)
+        int invalidBitset = 0;
+        int conditionBitset = 0;
+        for (int i = 0; i < experiments.length; ++i) {
             if (experiments[i] == Experiment.COSMIC_RAYS_PRIMARY_BAND
                     || experiments[i] == Experiment.COSMIC_RAYS_SECONDARY_BAND)
                 dependentBitset |= 1 << i;
-        final boolean useDependentCheck = Long.bitCount(dependentBitset) == 2;
-
-        // Build the invalid bitset
-        int invalidBitset = 0;
-        for (int i = 0; i < experiments.length; ++i)
             if (experiments[i] == Experiment.SOLAR_FLARES
                     || experiments[i] == Experiment.SOLAR_POWER
                     || experiments[i] == Experiment.SUN_SPOTS)
                 invalidBitset |= 1 << i;
-        final boolean useInvalidCheck = Long.bitCount(invalidBitset) == 3;
-
-        // Build the bitset requiring change
-        int conditionBitset = 0;
-        for (int i = 0; i < experiments.length; ++i)
             if (experiments[i] == Experiment.YEAST_FERMENTATION || experiments[i] == Experiment.SEED_VIABILITY)
                 conditionBitset |= 1 << i;
-        final boolean useConditionCheck = Long.bitCount(conditionBitset) == 3;
+        }
+        final boolean useDependentCheck = Long.bitCount(dependentBitset) == 2;
+        final boolean useInvalidCheck = Long.bitCount(invalidBitset) == 3;
+        final boolean useConditionCheck = Long.bitCount(conditionBitset) == 2;
 
         final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
@@ -190,11 +185,10 @@ public class Main {
             if (weight > maxWeight) continue;
 
             // Find the worst rating recorded
-            int worstRating = 0;
+            int worstRating = Integer.MAX_VALUE;
             for (int bestRating : bestRatings)
                 worstRating = Math.min(worstRating, bestRating);
-            if (rating <= worstRating)
-                continue;
+            if (rating <= worstRating) continue;
 
             // Find the heaviest of the worst rated subsets recorded
             int worstIndex = 0;
