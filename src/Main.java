@@ -202,7 +202,56 @@ public class Main {
             bestWeights[worstIndex] = weight;
             bestExperimentSets[worstIndex] = subset;
         }
+        return bestExperimentSets;
+    }
 
+    /**
+     * Finds the best subsets of experiments.
+     * Checks a subset of the possible subsets of experiments and chooses the {@code bestSetCount} best.
+     * This implementation does not check subsets which it already knows to be over the weight limit.
+     *
+     * @param experiments The set of experiments to choose from.
+     * @param maxWeight The maximum weight of a subset of experiments.
+     * @param bestSetCount The number of subsets to return.
+     * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
+     */
+    static public Experiment[][] dynamic(final Experiment[] experiments, final int maxWeight, final int bestSetCount) {
+        final int subsetCount = Math.powExact(2, experiments.length);
+        Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
+        int[] bestRatings = new int[bestSetCount];
+        SuperMask subsets = new SuperMask(subsetCount);
+        // Iterate over all subsets
+        int tracker = 0;
+        while (++tracker < subsetCount) {
+            if (subsets.match(tracker)) continue;
+            // Gather tracked subset
+            Experiment[] subset = new Experiment[Long.bitCount(tracker)];
+            for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
+                if ((tracker & i) == 0) continue;
+                subset[++maxSubsetIndex] = experiments[j];
+            }
+            // Evaluate this subset
+            int weight = 0;
+            int rating = 0;
+            for (Experiment experiment : subset) {
+                weight += experiment.weight;
+                rating += experiment.rating;
+            }
+            if (weight > maxWeight) {
+                subsets.add(tracker);
+                continue;
+            }
+            // Find the worst of the best experiments
+            int worstIndex = 0;
+            for (int i = 0; i < bestExperimentSets.length; ++i) {
+                if (bestRatings[worstIndex] <= bestRatings[i]) continue;
+                worstIndex = i;
+            }
+            // If this experiment is better than the worst, replace the worst
+            if (rating <= bestRatings[worstIndex]) continue;
+            bestRatings[worstIndex] = rating;
+            bestExperimentSets[worstIndex] = subset;
+        }
         return bestExperimentSets;
     }
 
@@ -241,6 +290,10 @@ public class Main {
         System.out.println("Brute Force");
         System.out.println("------------------------------------------");
         printResult(bruteForce(EXPERIMENTS.clone(), 700, 1)[0]);
+        System.out.println();
+        System.out.println("Dynamic");
+        System.out.println("------------------------------------------");
+        printResult(dynamic(EXPERIMENTS, 700, 1)[0]);
         System.out.println();
         System.out.println("Weight");
         System.out.println("------------------------------------------");
