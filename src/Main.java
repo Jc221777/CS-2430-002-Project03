@@ -122,48 +122,37 @@ public class Main {
      * Checks every valid subset of experiments and chooses the {@code bestSetCount} best.
      *
      * @param experiments The set of experiments to choose from.
-     * @param invalidSubsets An array of sets of experiments which are incompatible with each other.
-     * @param changes An array of changes in which the first column represents the set of experiments that causes the
-     *                change, and the second column represents the set of experiments that change.
      * @param maxWeight The maximum weight of a subset of experiments.
      * @param bestSetCount The number of subsets to return.
      * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
      */
     static public Experiment[][] bruteForce(final Experiment[] experiments,
-                                            final Experiment[][] invalidSubsets,
-                                            final Experiment[][][] changes,
                                             final int maxWeight,
                                             final int bestSetCount
     ) {
-        // Build the array of invalid subset bitsets
-        int[] invalidSubsetBitsets = new int[invalidSubsets.length];
-        for (int i = 0; i < invalidSubsets.length; ++i)
-            for (Experiment experiment : invalidSubsets[i]) {
-                int j = 0;
-                for (; j < experiments.length; ++j)
-                    if (experiments[j].name.equals(experiment.name)) break;
-                if (j == experiments.length) continue;
-                invalidSubsetBitsets[i] |= 1 << j;
-            }
+        // Build the invalid bitset
+        int invalidBitset = 0;
+        for (int i = 0; i < experiments.length; ++i)
+            if (experiments[i] == Experiment.SOLAR_FLARES
+                    || experiments[i] == Experiment.SOLAR_POWER
+                    || experiments[i] == Experiment.SUN_SPOTS)
+                invalidBitset |= 1 << i;
 
-        // Build the array of bitsets for subsets requiring change
-        int[] changeSubsetBitsets = new int[changes.length];
-        for (int i = 0; i < changeSubsetBitsets.length; ++i)
-            for (Experiment experiment : changes[i][0]) {
-                int j = 0;
-                for (; j < experiments.length; ++j)
-                    if (experiments[j].name.equals(experiment.name)) break;
-                if (j == experiments.length) continue;
-                changeSubsetBitsets[i] |= 1 << j;
-            }
+        // Build the bitset requiring change
+        int conditionBitset = 0;
+        for (int i = 0; i < experiments.length; ++i)
+            if (experiments[i] == Experiment.YEAST_FERMENTATION || experiments[i] == Experiment.SEED_VIABILITY)
+                conditionBitset |= 1 << i;
 
         final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
+        int[] bestWeights = new int[bestSetCount];
 
         // Iterate over all subsets
         int subsetBitset = 0;
         while (++subsetBitset < subsetCount) {
+            if (Long.bitCount(invalidBitset) == 3 && (subsetBitset & invalidBitset) == invalidBitset) continue;
             // Gather tracked subset
             Experiment[] subset = new Experiment[Long.bitCount(subsetBitset)];
             for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
@@ -171,21 +160,11 @@ public class Main {
                 subset[++maxSubsetIndex] = experiments[j];
             }
 
-            // Filter invalid subsets
-            boolean invalidSubset = false;
-            for (int invalidSubsetBitset : invalidSubsetBitsets)
-                if (invalidSubset = (subsetBitset & invalidSubsetBitset) == invalidSubsetBitset) break;
-            if (invalidSubset) continue;
-
             // Modify experiments based on combinations
-            for (int i = 0; i < changeSubsetBitsets.length; ++i)
-                if ((subsetBitset & changeSubsetBitsets[i]) == changeSubsetBitsets[i])
-                    for (Experiment change : changes[i][1])
-                        for (int j = 0; j < subset.length; ++j)
-                            if (subset[j].name.equals(change.name)) {
-                                subset[j] = change;
-                                break;
-                            }
+            if (Long.bitCount(conditionBitset) == 2 && (subsetBitset & conditionBitset) == conditionBitset)
+                for (int i = 0; i < subset.length; ++i)
+                    if (subset[i] == Experiment.YEAST_FERMENTATION)
+                        subset[i] = new Experiment(Experiment.YEAST_FERMENTATION.name, 20, Experiment.YEAST_FERMENTATION.rating);
 
             // Evaluate this subset
             int weight = 0;
@@ -195,15 +174,24 @@ public class Main {
                 rating += experiment.rating;
             }
             if (weight > maxWeight) continue;
-            // Find the worst of the best experiments
+
+            // Find the worst rating recorded
+            int worstRating = 0;
+            for (int bestRating : bestRatings)
+                worstRating = Math.min(worstRating, bestRating);
+            if (rating <= worstRating)
+                continue;
+
+            // Find the heaviest of the worst rated subsets recorded
             int worstIndex = 0;
-            for (int i = 0; i < bestExperimentSets.length; ++i) {
-                if (bestRatings[worstIndex] <= bestRatings[i]) continue;
-                worstIndex = i;
-            }
-            // If this experiment is better than the worst, replace the worst
-            if (rating <= bestRatings[worstIndex]) continue;
+            int worstWeight = 0;
+            for (int i = 0; i < bestWeights.length; ++i)
+                if (bestRatings[i] == worstRating && bestWeights[i] > worstWeight)
+                    worstWeight = bestWeights[worstIndex = i];
+
+            // If this subset is better than the worst, replace the worst
             bestRatings[worstIndex] = rating;
+            bestWeights[worstIndex] = weight;
             bestExperimentSets[worstIndex] = subset;
         }
 
@@ -244,14 +232,7 @@ public class Main {
     void main() {
         System.out.println("Brute Force");
         System.out.println("------------------------------------------");
-        printResult(bruteForce(EXPERIMENTS.clone(), new Experiment[][] {
-                new Experiment[]{Experiment.SOLAR_FLARES, Experiment.SOLAR_POWER, Experiment.SUN_SPOTS}
-        }, new Experiment[][][]{
-                new Experiment[][]{  // Change 1
-                        new Experiment[]{Experiment.YEAST_FERMENTATION, Experiment.SEED_VIABILITY},  // Change Condition
-                        new Experiment[]{new Experiment(Experiment.YEAST_FERMENTATION.name, 20, Experiment.YEAST_FERMENTATION.rating)}  // Change
-                }
-        }, 700, 1)[0]);
+        printResult(bruteForce(EXPERIMENTS.clone(), 700, 1)[0]);
         System.out.println();
         System.out.println("Weight");
         System.out.println("------------------------------------------");
