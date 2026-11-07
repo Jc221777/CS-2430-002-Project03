@@ -16,13 +16,13 @@ public class Main {
         final static Experiment COSMIC_RAYS_PRIMARY_BAND   = new Experiment("Cosmic Rays (Primary Band)",   80,  7);
         final static Experiment COSMIC_RAYS_SECONDARY_BAND = new Experiment("Cosmic Rays (Secondary Band)", 10,  5);
         final static Experiment YEAST_FERMENTATION         = new Experiment("Yeast Fermentation",           27,  4);
-        
+
         public boolean isSolar() {
             return this == SOLAR_FLARES ||
                    this == SOLAR_POWER ||
                    this == SUN_SPOTS;
         }
-        
+
         public double ratio() {
             return (double) rating / weight;
         }
@@ -68,48 +68,48 @@ public class Main {
     	int totalWeight = 0;
     	int selectedCount = 0;
     	int solarCount = 0;
-    	
+
     	boolean hasSeed = false;
     	boolean hasYeast = false;
     	boolean hasPrimaryBand = false;
 
     	for (Experiment experiment : sorted) {
-    		
+
     		if (experiment == Experiment.COSMIC_RAYS_SECONDARY_BAND) {
     			continue;
     		}
-    		
+
     		int weight = experiment.weight;
-    		
+
     		if ((experiment == Experiment.YEAST_FERMENTATION && hasSeed) || (experiment == Experiment.SEED_VIABILITY && hasYeast)) {
     			weight -= 7;
     		}
 
     		if (totalWeight + weight <= 700 && (!experiment.isSolar() || solarCount < 2)) {
-    			
+
     			selected[selectedCount++] = experiment;
             	totalWeight += weight;
-    			
+
     			if (experiment == Experiment.YEAST_FERMENTATION) {
     				hasYeast = true;
     			}
-    			
+
     			if (experiment == Experiment.SEED_VIABILITY) {
     				hasSeed = true;
     			}
-    			
+
     			if (experiment == Experiment.COSMIC_RAYS_PRIMARY_BAND) {
     				hasPrimaryBand = true;
     			}
-    			
+
     			if (experiment.isSolar()) {
     				solarCount++;
     			}
     	}
-    		
+
     }
     	if (hasPrimaryBand && totalWeight + 10 <= 700) {
-    		
+
     		selected[selectedCount++] = Experiment.COSMIC_RAYS_SECONDARY_BAND;
     		totalWeight += Experiment.COSMIC_RAYS_SECONDARY_BAND.weight;
     		}
@@ -117,31 +117,69 @@ public class Main {
     	return Arrays.copyOf(selected, selectedCount);
 }
 
-
-
     /**
      * Finds the best subsets of experiments using brute force.
-     * Checks every possible subset of experiments and chooses the {@code bestSetCount} best.
+     * Checks every valid subset of experiments and chooses the {@code bestSetCount} best.
      *
      * @param experiments The set of experiments to choose from.
      * @param maxWeight The maximum weight of a subset of experiments.
      * @param bestSetCount The number of subsets to return.
      * @return The {@code bestSetCount} subsets of experiments with the highest total ratings.
      */
-    static public Experiment[][] bruteForce(final Experiment[] experiments, final int maxWeight, final int bestSetCount) {
+    static public Experiment[][] bruteForce(final Experiment[] experiments,
+                                            final int maxWeight,
+                                            final int bestSetCount
+    ) {
+        // Build the bitset of the experiments which depend on each other
+        int dependentBitset = 0;
+        for (int i = 0; i < experiments.length; ++i)
+            if (experiments[i] == Experiment.COSMIC_RAYS_PRIMARY_BAND
+                    || experiments[i] == Experiment.COSMIC_RAYS_SECONDARY_BAND)
+                dependentBitset |= 1 << i;
+        final boolean useDependentCheck = Long.bitCount(dependentBitset) == 2;
+
+        // Build the invalid bitset
+        int invalidBitset = 0;
+        for (int i = 0; i < experiments.length; ++i)
+            if (experiments[i] == Experiment.SOLAR_FLARES
+                    || experiments[i] == Experiment.SOLAR_POWER
+                    || experiments[i] == Experiment.SUN_SPOTS)
+                invalidBitset |= 1 << i;
+        final boolean useInvalidCheck = Long.bitCount(invalidBitset) == 3;
+
+        // Build the bitset requiring change
+        int conditionBitset = 0;
+        for (int i = 0; i < experiments.length; ++i)
+            if (experiments[i] == Experiment.YEAST_FERMENTATION || experiments[i] == Experiment.SEED_VIABILITY)
+                conditionBitset |= 1 << i;
+        final boolean useConditionCheck = Long.bitCount(conditionBitset) == 3;
+
         final int subsetCount = Math.powExact(2, experiments.length);
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
+        int[] bestWeights = new int[bestSetCount];
 
         // Iterate over all subsets
-        int tracker = 0;
-        while (++tracker < subsetCount) {
+        int subsetBitset = 0;
+        while (++subsetBitset < subsetCount) {
+            if (useDependentCheck) {
+                final int checkSet = subsetBitset & dependentBitset;
+                if (checkSet != 0 && checkSet != dependentBitset) continue;
+            }
+            if (useInvalidCheck && (subsetBitset & invalidBitset) == invalidBitset) continue;
             // Gather tracked subset
-            Experiment[] subset = new Experiment[Long.bitCount(tracker)];
+            Experiment[] subset = new Experiment[Long.bitCount(subsetBitset)];
             for (int i = 1, j = 0, maxSubsetIndex = -1; i < subsetCount; i <<= 1, ++j) {
-                if ((tracker & i) == 0) continue;
+                if ((subsetBitset & i) == 0) continue;
                 subset[++maxSubsetIndex] = experiments[j];
             }
+
+            // Modify experiments based on combinations
+            if (useConditionCheck && (subsetBitset & conditionBitset) == conditionBitset)
+                for (int i = 0; i < subset.length; ++i)
+                    if (subset[i] == Experiment.YEAST_FERMENTATION)
+                        subset[i] = new Experiment(Experiment.YEAST_FERMENTATION.name, 20, Experiment.YEAST_FERMENTATION.rating);
+
             // Evaluate this subset
             int weight = 0;
             int rating = 0;
@@ -150,15 +188,24 @@ public class Main {
                 rating += experiment.rating;
             }
             if (weight > maxWeight) continue;
-            // Find the worst of the best experiments
+
+            // Find the worst rating recorded
+            int worstRating = 0;
+            for (int bestRating : bestRatings)
+                worstRating = Math.min(worstRating, bestRating);
+            if (rating <= worstRating)
+                continue;
+
+            // Find the heaviest of the worst rated subsets recorded
             int worstIndex = 0;
-            for (int i = 0; i < bestExperimentSets.length; ++i) {
-                if (bestRatings[worstIndex] <= bestRatings[i]) continue;
-                worstIndex = i;
-            }
-            // If this experiment is better than the worst, replace the worst
-            if (rating <= bestRatings[worstIndex]) continue;
+            int worstWeight = 0;
+            for (int i = 0; i < bestWeights.length; ++i)
+                if (bestRatings[i] == worstRating && bestWeights[i] > worstWeight)
+                    worstWeight = bestWeights[worstIndex = i];
+
+            // If this subset is better than the worst, replace the worst
             bestRatings[worstIndex] = rating;
+            bestWeights[worstIndex] = weight;
             bestExperimentSets[worstIndex] = subset;
         }
 
@@ -171,20 +218,20 @@ public class Main {
      * @param array The array to print.
      */
     private void printResult(Experiment[] array) {
-    	
+
     	int total_weight = 0;
     	int total_rating = 0;
-    	
+
     	boolean hasSeed = Arrays.asList(array).contains(Experiment.SEED_VIABILITY);
-    	
+
         for (Experiment t : array) {
-        	
+
         	int weight = t.weight;
-        	
+
         	if (t == Experiment.YEAST_FERMENTATION && hasSeed) {
         		weight -= 7;
         	}
-        	
+
         	System.out.print(t.name);
         	System.out.print(" (Weight: " + weight);
         	System.out.println(" | Rating: " + t.rating + ")");
@@ -199,7 +246,7 @@ public class Main {
     void main() {
         System.out.println("Brute Force");
         System.out.println("------------------------------------------");
-        printResult(bruteForce(EXPERIMENTS, 700, 1)[0]);
+        printResult(bruteForce(EXPERIMENTS.clone(), 700, 1)[0]);
         System.out.println();
         System.out.println("Weight");
         System.out.println("------------------------------------------");
