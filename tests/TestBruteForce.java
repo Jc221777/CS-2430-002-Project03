@@ -49,4 +49,45 @@ public class TestBruteForce {
         };
         Assertions.assertArrayEquals(expected, Main.bruteForce(input, expectedWeight, 1)[0]);
     }
+
+    @Test
+    void doesNotIncludeSecondaryCosmicIfNotIncludingPrimaryCosmic() {
+        Main.Experiment[] expected = new Main.Experiment[]{
+                Main.Experiment.CLOUD_PATTERNS,
+        };
+        Main.Experiment[] input = new Main.Experiment[]{
+                Main.Experiment.CLOUD_PATTERNS,
+                Main.Experiment.COSMIC_RAYS_PRIMARY_BAND,
+                Main.Experiment.COSMIC_RAYS_SECONDARY_BAND
+        };
+        int weight = Main.Experiment.COSMIC_RAYS_SECONDARY_BAND.weight() + Main.Experiment.CLOUD_PATTERNS.weight();
+        Assertions.assertArrayEquals(expected, Main.bruteForce(input, weight, 1)[0]);
+    }
+
+    @Test
+    void doesNotIncludeSolarFlaresSolarPowerAndSunSpots() {
+        Main.Experiment[] expected = new Main.Experiment[]{
+                Main.Experiment.SOLAR_FLARES,
+                Main.Experiment.SOLAR_POWER,
+        };
+        Main.Experiment[] input = new Main.Experiment[]{
+                Main.Experiment.SOLAR_FLARES,
+                Main.Experiment.SOLAR_POWER,
+                Main.Experiment.SUN_SPOTS
+        };
+        Assertions.assertArrayEquals(expected, Main.bruteForce(input, Integer.MAX_VALUE, 1)[0]);
+    }
+
+    @Test
+    void reducesYeastWeightIfIncludingSeed() {
+        Main.Experiment[] expected = new Main.Experiment[]{
+                Main.Experiment.SEED_VIABILITY,
+                new Main.Experiment(Main.Experiment.YEAST_FERMENTATION.name(), 20, Main.Experiment.YEAST_FERMENTATION.rating()),
+        };
+        Main.Experiment[] input = new Main.Experiment[]{
+                Main.Experiment.SEED_VIABILITY,
+                Main.Experiment.YEAST_FERMENTATION
+        };
+        Assertions.assertArrayEquals(expected, Main.bruteForce(input, 27, 1)[0]);
+    }
 }
