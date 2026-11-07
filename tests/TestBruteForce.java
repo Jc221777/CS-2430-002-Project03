@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.*;
 
 public class TestBruteForce {
+    /**
+     * Typical case, ensures generally correct behavior.
+     */
     @Test
     void hasCorrectOutput() {
         Main.Experiment[] expected = new Main.Experiment[]{
@@ -15,6 +18,9 @@ public class TestBruteForce {
         Assertions.assertArrayEquals(expected, Main.bruteForce(input, 250, 1)[0]);
     }
 
+    /**
+     * Ensures that no solutions cannot exceed the weight limit.
+     */
     @Test
     void doesNotExceedWeightLimit() {
         for (Main.Experiment[] experimentSet : Main.bruteForce(Main.EXPERIMENTS, 700, 4096)) {
@@ -25,7 +31,6 @@ public class TestBruteForce {
             Assertions.assertFalse(totalWeight > 700);
         }
 
-
         for (Main.Experiment[] experimentSet : Main.bruteForce(Main.EXPERIMENTS, 234, 4096)) {
             int totalWeight = 0;
             if (experimentSet == null) continue;
@@ -35,6 +40,9 @@ public class TestBruteForce {
         }
     }
 
+    /**
+     * Verifies that a solution which exactly matches the maximum weight can be generated.
+     */
     @Test
     void canMatchWeightLimit() {
         Main.Experiment[] expected = new Main.Experiment[]{
@@ -50,6 +58,10 @@ public class TestBruteForce {
         Assertions.assertArrayEquals(expected, Main.bruteForce(input, expectedWeight, 1)[0]);
     }
 
+    /**
+     * Ensures that if the Primary Cosmic Rays experiment is not included, then the Secondary Cosmic Rays experiment is
+     * also not included.
+     */
     @Test
     void doesNotIncludeSecondaryCosmicIfNotIncludingPrimaryCosmic() {
         Main.Experiment[] expected = new Main.Experiment[]{
@@ -64,6 +76,9 @@ public class TestBruteForce {
         Assertions.assertArrayEquals(expected, Main.bruteForce(input, weight, 1)[0]);
     }
 
+    /**
+     * Ensures that Solar Flares, Solar Power, and Sun Spots are not all included at the same time.
+     */
     @Test
     void doesNotIncludeSolarFlaresSolarPowerAndSunSpots() {
         Main.Experiment[] expected = new Main.Experiment[]{
@@ -78,6 +93,10 @@ public class TestBruteForce {
         Assertions.assertArrayEquals(expected, Main.bruteForce(input, Integer.MAX_VALUE, 1)[0]);
     }
 
+    /**
+     * Ensures that the weight reduction of the Yeast Fermentation experiment is applied when Seed Viability is
+     * included.
+     */
     @Test
     void reducesYeastWeightIfIncludingSeed() {
         Main.Experiment[] expected = new Main.Experiment[]{
