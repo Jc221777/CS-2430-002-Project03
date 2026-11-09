@@ -74,7 +74,7 @@ public class Main {
      * @param comparator Determines experiment priority.
      * @return Array of selected experiments.
      */
-     public Experiment[] greedy(Experiment[] experiments, Comparator<Experiment> comparator, int finalWeight) {
+    static public Experiment[] greedy(Experiment[] experiments, Comparator<Experiment> comparator, int finalWeight) {
 
     	Arrays.sort(experiments, comparator);
 
