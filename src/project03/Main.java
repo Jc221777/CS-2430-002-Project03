@@ -58,7 +58,7 @@ public class Main {
  	* @param comparator Determines experiment priority.
  	* @return Array of selected experiments.
  	*/
-     public Experiment[] greedy(Comparator<Experiment> comparator) {
+    static public Experiment[] greedy(Comparator<Experiment> comparator) {
 
     	Experiment[] sorted = EXPERIMENTS.clone();
 
@@ -356,5 +356,6 @@ public class Main {
         System.out.println("------------------------------------------");
         printResult(greedy(Comparator.comparingDouble(Experiment::ratio).reversed()));
         System.out.println();
+       
     }
 }

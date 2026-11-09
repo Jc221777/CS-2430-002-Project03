@@ -113,4 +113,6 @@ public class TestBruteForce {
         };
         Assertions.assertArrayEquals(expected, Main.bruteForce(input, 27, 1)[0]);
     }
+    
+    
 }
