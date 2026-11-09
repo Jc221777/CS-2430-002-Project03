@@ -1,4 +1,8 @@
+package project03;
 import org.junit.jupiter.api.*;
+
+import project03.Main;
+import project03.Main.Experiment;
 
 public class TestDynamic {
     /**
