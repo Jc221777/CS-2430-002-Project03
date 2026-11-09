@@ -1,3 +1,4 @@
+package project03;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -57,7 +58,7 @@ public class Main {
  	* @param comparator Determines experiment priority.
  	* @return Array of selected experiments.
  	*/
-    private Experiment[] greedy(Comparator<Experiment> comparator) {
+     public Experiment[] greedy(Comparator<Experiment> comparator) {
 
     	Experiment[] sorted = EXPERIMENTS.clone();
 
@@ -116,6 +117,11 @@ public class Main {
 
     	return Arrays.copyOf(selected, selectedCount);
 }
+     
+
+
+
+
 
     /**
      * Finds the best subsets of experiments using brute force.
