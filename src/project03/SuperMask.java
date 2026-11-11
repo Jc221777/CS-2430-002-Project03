@@ -1,3 +1,20 @@
+package project03;
+
+
+
+/**
+ *A class for bit mask scanning.
+ * SuperMask provides and efficient way to check if any bitset previously added is present in a match bitset. Constant
+ * time matches are achieved by moving the work to the add time, a function called much less frequently in our use case.
+ * 
+ * Team 03
+ * Jasey Christensen, Thaddeus Schlep & Tristan Taj
+ * CS 2430, section 002
+ * Programming Project 3: Optimal selection
+ * 
+ * @author Thaddeus
+ */
+
 /**
  * A class for bit mask scanning.
  * SuperMask provides and efficient way to check if any bitset previously added is present in a match bitset. Constant

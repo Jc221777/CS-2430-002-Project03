@@ -1,9 +1,9 @@
+package project03;
 import java.util.Arrays;
 import java.util.Comparator;
 /**
- * A class that builds a set of records and organizes them using greedy
- * strategies, brute force, and dynamic strategies, then displays
- * the results of each strategy.
+ * A class that builds a set of records and organizes them using greedy strategies and
+ * Brute force as well as dynamic strategies and then showcases the output of all of these strategies
  *
  * Team 03
  * Jasey Christensen, Thaddeus Schlep & Tristan Taj
@@ -73,7 +73,7 @@ public class Main {
      * @param comparator Determines experiment priority.
      * @return Array of selected experiments.
      */
-    private Experiment[] greedy(Experiment[] experiments, Comparator<Experiment> comparator, int finalWeight) {
+    static public Experiment[] greedy(Experiment[] experiments, Comparator<Experiment> comparator, int finalWeight) {
 
     	Arrays.sort(experiments, comparator);
 
@@ -88,19 +88,19 @@ public class Main {
     	boolean hasPrimaryBand = false;
 
     	for (Experiment experiment : experiments) {
-    		
+
     		// Skip the secondary band until the primary band has been selected.
     		if (experiment == Experiment.COSMIC_RAYS_SECONDARY_BAND) {
     			continue;
     		}
 
     		int weight = experiment.weight;
-    		
+
     		// Reduce the combined weight by 7 kg if both experiments are selected.
     		if ((experiment == Experiment.YEAST_FERMENTATION && hasSeed) || (experiment == Experiment.SEED_VIABILITY && hasYeast)) {
     			weight -= 7;
     		}
-    		
+
     		// Ensure the payload stays within finalWeight and contains at most two solar experiments.
     		if (totalWeight + weight <= finalWeight && (!experiment.isSolar() || solarCount < 2)) {
 
@@ -127,7 +127,7 @@ public class Main {
 
     			selected[selectedCount++] = experiment;
     			totalWeight += weight;
-    			
+
     			if (experiment == Experiment.COSMIC_RAYS_PRIMARY_BAND) {
     				hasPrimaryBand = true;
     			}
@@ -273,6 +273,7 @@ public class Main {
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
         int[] bestWeights = new int[bestSetCount];
+        Arrays.fill(bestWeights, Integer.MAX_VALUE);
         SuperMask subsets = new SuperMask(subsetCount);
 
         // Iterate over all subsets
@@ -340,11 +341,11 @@ public class Main {
 
     	int total_weight = 0;
     	int total_rating = 0;
-    	
+
         for (Experiment t : array) {
 
         	int weight = t.weight;
-        	
+
         	System.out.print(t.name);
         	System.out.print(" (Weight: " + weight);
         	System.out.println(" | Rating: " + t.rating + ")");
@@ -355,7 +356,7 @@ public class Main {
         System.out.println("Total Weight: " + total_weight);
         System.out.println("Total Rating: " + total_rating);
     }
-    
+
     /**
      * Calculates the total rating of a selected payload.
      *
