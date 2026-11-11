@@ -1,7 +1,18 @@
 package project03;
 import java.util.Arrays;
 import java.util.Comparator;
-
+/**
+ * A class that builds a set of records and organizes them using greedy startegies and 
+ * Brute force as well as dynamic strategies and then showcases the output of all of these strategies
+ * 
+ * Team 03
+ * Jasey Christensen, Thaddeus Schlep & Tristan Taj
+ * CS 2430, section 002
+ * Programming Project 3: Optimal selection
+ * 
+ * @author Thaddeus
+ * @author Tristan
+ */
 public class Main {
     public record Experiment(String name, int weight, int rating) {
         final static Experiment CLOUD_PATTERNS             = new Experiment("Cloud Patterns",               36,  5);
@@ -58,13 +69,11 @@ public class Main {
  	* @param comparator Determines experiment priority.
  	* @return Array of selected experiments.
  	*/
-    static public Experiment[] greedy(Comparator<Experiment> comparator) {
+    static public Experiment[] greedy(Experiment[] experiments, Comparator<Experiment> comparator, int finalWeight) {
 
-    	Experiment[] sorted = EXPERIMENTS.clone();
+    	Arrays.sort(experiments, comparator);
 
-    	Arrays.sort(sorted, comparator);
-
-    	Experiment[] selected = new Experiment[sorted.length];
+    	Experiment[] selected = new Experiment[experiments.length];
 
     	int totalWeight = 0;
     	int selectedCount = 0;
@@ -74,7 +83,7 @@ public class Main {
     	boolean hasYeast = false;
     	boolean hasPrimaryBand = false;
 
-    	for (Experiment experiment : sorted) {
+    	for (Experiment experiment : experiments) {
 
     		if (experiment == Experiment.COSMIC_RAYS_SECONDARY_BAND) {
     			continue;
@@ -86,7 +95,7 @@ public class Main {
     			weight -= 7;
     		}
 
-    		if (totalWeight + weight <= 700 && (!experiment.isSolar() || solarCount < 2)) {
+    		if (totalWeight + weight <= finalWeight && (!experiment.isSolar() || solarCount < 2)) {
 
     			selected[selectedCount++] = experiment;
             	totalWeight += weight;
@@ -105,11 +114,11 @@ public class Main {
 
     			if (experiment.isSolar()) {
     				solarCount++;
-    			}
+    			} 
     	}
 
     }
-    	if (hasPrimaryBand && totalWeight + 10 <= 700) {
+    	if (hasPrimaryBand && totalWeight + 10 <= finalWeight) {
 
     		selected[selectedCount++] = Experiment.COSMIC_RAYS_SECONDARY_BAND;
     		totalWeight += Experiment.COSMIC_RAYS_SECONDARY_BAND.weight;
@@ -346,15 +355,15 @@ public class Main {
         System.out.println();
         System.out.println("Weight");
         System.out.println("------------------------------------------");
-        printResult(greedy(Comparator.comparingInt(Experiment::weight)));
+        printResult(greedy(EXPERIMENTS ,Comparator.comparingInt(Experiment::weight), 700));
         System.out.println();
         System.out.println("Rating");
         System.out.println("------------------------------------------");
-        printResult(greedy(Comparator.comparingInt(Experiment::rating).reversed()));
+        printResult(greedy(EXPERIMENTS, Comparator.comparingInt(Experiment::rating).reversed(), 700));
         System.out.println();
         System.out.println("Ratio");
         System.out.println("------------------------------------------");
-        printResult(greedy(Comparator.comparingDouble(Experiment::ratio).reversed()));
+        printResult(greedy(EXPERIMENTS, Comparator.comparingDouble(Experiment::ratio).reversed(), 700));
         System.out.println();
        
     }
