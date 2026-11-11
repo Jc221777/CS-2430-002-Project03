@@ -2,10 +2,9 @@ package project03;
 import java.util.Arrays;
 import java.util.Comparator;
 /**
- * A class that builds a set of records and organizes them using greedy
- * strategies, brute force, and dynamic strategies, then displays
- * the results of each strategy.
- *
+ * A class that builds a set of records and organizes them using greedy strategies and
+ * Brute force as well as dynamic strategies and then showcases the output of all of these strategies
+ * 
  * Team 03
  * Jasey Christensen, Thaddeus Schlep & Tristan Taj
  * CS 2430, section 002
