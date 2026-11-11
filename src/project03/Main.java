@@ -2,7 +2,7 @@ package project03;
 import java.util.Arrays;
 import java.util.Comparator;
 /**
- * A class that builds a set of records and organizes them using greedy startegies and 
+ * A class that builds a set of records and organizes them using greedy strategies and 
  * Brute force as well as dynamic strategies and then showcases the output of all of these strategies
  * 
  * Team 03
@@ -168,7 +168,8 @@ public class Main {
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
         int[] bestWeights = new int[bestSetCount];
-
+        Arrays.fill(bestWeights, Integer.MAX_VALUE);
+        
         // Iterate over all subsets
         int subsetBitset = 0;
         while (++subsetBitset < subsetCount) {
@@ -255,6 +256,7 @@ public class Main {
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
         int[] bestWeights = new int[bestSetCount];
+        Arrays.fill(bestWeights, Integer.MAX_VALUE);
         SuperMask subsets = new SuperMask(subsetCount);
 
         // Iterate over all subsets
