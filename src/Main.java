@@ -1,6 +1,18 @@
 import java.util.Arrays;
 import java.util.Comparator;
-
+/**
+ * A class that builds a set of records and organizes them using greedy
+ * strategies, brute force, and dynamic strategies, then displays
+ * the results of each strategy.
+ *
+ * Team 03
+ * Jasey Christensen, Thaddeus Schlep & Tristan Taj
+ * CS 2430, section 002
+ * Programming Project 3: Optimal Selection
+ *
+ * @author Thaddeus
+ * @author Tristan
+ */
 public class Main {
     public record Experiment(String name, int weight, int rating) {
         final static Experiment CLOUD_PATTERNS             = new Experiment("Cloud Patterns",               36,  5);
@@ -50,20 +62,22 @@ public class Main {
     };
 
     /**
- 	* Selects experiments using a greedy strategy.
- 	* Sorts experiments by the provided comparator and
- 	* selects each experiment if it fits within 700 kg.
- 	*
- 	* @param comparator Determines experiment priority.
- 	* @return Array of selected experiments.
- 	*/
-    private Experiment[] greedy(Comparator<Experiment> comparator) {
+     * Selects experiments using a greedy strategy.
+     * Sorts experiments by the provided comparator and
+     * selects each experiment if it fits within 700 kg.
+     *
+     * Accounts for additional constraints including a maximum of
+     * two solar experiments, the Seed Viability and Yeast
+     * Fermentation weight reduction, and the Cosmic Rays dependency.
+     *
+     * @param comparator Determines experiment priority.
+     * @return Array of selected experiments.
+     */
+    private Experiment[] greedy(Experiment[] experiments, Comparator<Experiment> comparator, int finalWeight) {
 
-    	Experiment[] sorted = EXPERIMENTS.clone();
+    	Arrays.sort(experiments, comparator);
 
-    	Arrays.sort(sorted, comparator);
-
-    	Experiment[] selected = new Experiment[sorted.length];
+    	Experiment[] selected = new Experiment[experiments.length];
 
     	int totalWeight = 0;
     	int selectedCount = 0;
@@ -73,19 +87,22 @@ public class Main {
     	boolean hasYeast = false;
     	boolean hasPrimaryBand = false;
 
-    	for (Experiment experiment : sorted) {
-
+    	for (Experiment experiment : experiments) {
+    		
+    		// Skip the secondary band until the primary band has been selected.
     		if (experiment == Experiment.COSMIC_RAYS_SECONDARY_BAND) {
     			continue;
     		}
 
     		int weight = experiment.weight;
-
+    		
+    		// Reduce the combined weight by 7 kg if both experiments are selected.
     		if ((experiment == Experiment.YEAST_FERMENTATION && hasSeed) || (experiment == Experiment.SEED_VIABILITY && hasYeast)) {
     			weight -= 7;
     		}
-
-    		if (totalWeight + weight <= 700 && (!experiment.isSolar() || solarCount < 2)) {
+    		
+    		// Ensure the payload stays within finalWeight and contains at most two solar experiments.
+    		if (totalWeight + weight <= finalWeight && (!experiment.isSolar() || solarCount < 2)) {
 
     		    if (experiment == Experiment.YEAST_FERMENTATION) {
     		        hasYeast = true;
@@ -121,7 +138,9 @@ public class Main {
     	}
 
     }
-    	if (hasPrimaryBand && totalWeight + 10 <= 700) {
+    	// Include the secondary band if the primary was selected
+    	// and there is enough remaining weight capacity.
+    	if (hasPrimaryBand && totalWeight + 10 <= finalWeight) {
 
     		selected[selectedCount++] = Experiment.COSMIC_RAYS_SECONDARY_BAND;
     		totalWeight += Experiment.COSMIC_RAYS_SECONDARY_BAND.weight;
@@ -166,6 +185,7 @@ public class Main {
         Experiment[][] bestExperimentSets = new Experiment[bestSetCount][];
         int[] bestRatings = new int[bestSetCount];
         int[] bestWeights = new int[bestSetCount];
+        Arrays.fill(bestWeights, Integer.MAX_VALUE);
 
         // Iterate over all subsets
         int subsetBitset = 0;
@@ -335,27 +355,113 @@ public class Main {
         System.out.println("Total Weight: " + total_weight);
         System.out.println("Total Rating: " + total_rating);
     }
+    
+    /**
+     * Calculates the total rating of a selected payload.
+     *
+     * @param experiments The selected experiments.
+     * @return The combined rating.
+     */
+    private static int totalRating(Experiment[] experiments) {
+        int total = 0;
+
+        for (Experiment experiment : experiments) {
+            total += experiment.rating();
+        }
+
+        return total;
+    }
+
+    /**
+     * Prints a single row of the comparison summary.
+     *
+     * @param name Strategy name.
+     * @param experiments Selected experiments.
+     * @param optimalRating The maximum rating found by brute force.
+     */
+    private void printSummary(String name, Experiment[] experiments,
+                              int optimalRating) {
+        int weight = 0;
+
+        for (Experiment experiment : experiments) {
+            weight += experiment.weight();
+        }
+
+        int rating = totalRating(experiments);
+
+        System.out.printf("%-30s %10d %10d %12s%n",
+                name, weight, rating,
+                rating == optimalRating ? "YES" : "NO");
+    }
 
     void main() {
-        System.out.println("Brute Force");
-        System.out.println("------------------------------------------");
-        printResult(bruteForce(EXPERIMENTS, 700, 1)[0]);
-        System.out.println();
-        System.out.println("Dynamic");
-        System.out.println("------------------------------------------");
-        printResult(dynamic(EXPERIMENTS, 700, 1)[0]);
-        System.out.println();
-        System.out.println("Weight");
-        System.out.println("------------------------------------------");
-        printResult(greedy(Comparator.comparingInt(Experiment::weight)));
-        System.out.println();
-        System.out.println("Rating");
-        System.out.println("------------------------------------------");
-        printResult(greedy(Comparator.comparingInt(Experiment::rating).reversed()));
-        System.out.println();
-        System.out.println("Ratio");
-        System.out.println("------------------------------------------");
-        printResult(greedy(Comparator.comparingDouble(Experiment::ratio).reversed()));
-        System.out.println();
+        Main program = new Main();
+        final int MAX_WEIGHT = 700;
+
+        System.out.println("Project 3 - Knapsack Optimization");
+        System.out.println("Maximum Weight: " + MAX_WEIGHT + " kg");
+
+        // Greedy strategies
+        Experiment[] ratingFirst = program.greedy(
+        		EXPERIMENTS,
+                Comparator.comparingInt(Experiment::rating).reversed(),
+                700);
+
+        Experiment[] weightFirst = program.greedy(
+        		EXPERIMENTS,
+                Comparator.comparingInt(Experiment::weight),
+                700);
+
+        Experiment[] ratioFirst = program.greedy(
+        		EXPERIMENTS,
+                Comparator.comparingDouble(Experiment::ratio).reversed(),
+                700);
+
+        System.out.println("\n--- Highest Rating First ---");
+        program.printResult(ratingFirst);
+
+        System.out.println("\n--- Lightest Weight First ---");
+        program.printResult(weightFirst);
+
+        System.out.println("\n--- Best Ratio First ---");
+        program.printResult(ratioFirst);
+
+        // Brute force
+        Experiment[][] topThree = bruteForce(EXPERIMENTS, MAX_WEIGHT, 3);
+
+        Arrays.sort(topThree, (a, b) ->
+                Integer.compare(totalRating(b), totalRating(a)));
+
+        System.out.println("\n--- Brute Force ---");
+
+        for (int i = 0; i < topThree.length; i++) {
+            System.out.println("\nSubset " + (i + 1));
+
+            if (i == 0) {
+                System.out.println("Optimal Solution");
+            }
+
+            program.printResult(topThree[i]);
+        }
+
+        // Dynamic
+        System.out.println("\n--- Dynamic ---");
+
+        Experiment[] dynamicResult = dynamic(EXPERIMENTS, MAX_WEIGHT, 1)[0];
+        program.printResult(dynamicResult);
+
+        // Comparison
+        System.out.println("\n--- Comparison ---");
+
+        int optimalRating = totalRating(topThree[0]);
+
+        System.out.printf("%-25s %10s %10s %10s%n",
+                "Strategy", "Weight", "Rating", "Optimal");
+
+        program.printSummary("Highest Rating", ratingFirst, optimalRating);
+        program.printSummary("Lightest Weight", weightFirst, optimalRating);
+        program.printSummary("Best Ratio", ratioFirst, optimalRating);
+        program.printSummary("Brute Force", topThree[0], optimalRating);
+        program.printSummary("Dynamic", dynamicResult, optimalRating);
     }
 }
