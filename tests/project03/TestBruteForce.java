@@ -3,7 +3,16 @@ import org.junit.jupiter.api.*;
 
 import project03.Main;
 import project03.Main.Experiment;
-
+/**
+ * A test class that tests the functionality of the Bruteforce method
+ * 
+ * Team 03
+ * Jasey Christensen, Thaddeus Schlep & Tristan Taj
+ * CS 2430, section 002
+ *  Programming Project 3: Optimal selection
+ * 
+ * @author Thaddeus
+ */
 public class TestBruteForce {
     /**
      * Typical case, ensures generally correct behavior.
