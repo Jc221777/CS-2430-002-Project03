@@ -4,7 +4,7 @@ import java.util.Comparator;
 /**
  * A class that builds a set of records and organizes them using greedy strategies and
  * Brute force as well as dynamic strategies and then showcases the output of all of these strategies
- * 
+ *
  * Team 03
  * Jasey Christensen, Thaddeus Schlep & Tristan Taj
  * CS 2430, section 002
