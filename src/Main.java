@@ -87,17 +87,30 @@ public class Main {
 
     		if (totalWeight + weight <= 700 && (!experiment.isSolar() || solarCount < 2)) {
 
+    		    if (experiment == Experiment.YEAST_FERMENTATION) {
+    		        hasYeast = true;
+    		    }
+
+    		    if (experiment == Experiment.SEED_VIABILITY) {
+    		        hasSeed = true;
+    		    }
+
+    		    if (experiment == Experiment.YEAST_FERMENTATION && hasSeed) {
+    		        experiment = new Experiment(experiment.name(), weight, experiment.rating());
+    		    }
+
+    			if (experiment == Experiment.SEED_VIABILITY && hasYeast) {
+    			    for (int i = 0; i < selectedCount; i++) {
+    			        if (selected[i] == Experiment.YEAST_FERMENTATION) {
+    			            selected[i] = new Experiment("Yeast Fermentation", 20, 4);
+    			            break;
+    			        }
+    			    }
+    			}
+
     			selected[selectedCount++] = experiment;
-            	totalWeight += weight;
-
-    			if (experiment == Experiment.YEAST_FERMENTATION) {
-    				hasYeast = true;
-    			}
-
-    			if (experiment == Experiment.SEED_VIABILITY) {
-    				hasSeed = true;
-    			}
-
+    			totalWeight += weight;
+    			
     			if (experiment == Experiment.COSMIC_RAYS_PRIMARY_BAND) {
     				hasPrimaryBand = true;
     			}
@@ -307,17 +320,11 @@ public class Main {
 
     	int total_weight = 0;
     	int total_rating = 0;
-
-    	boolean hasSeed = Arrays.asList(array).contains(Experiment.SEED_VIABILITY);
-
+    	
         for (Experiment t : array) {
 
         	int weight = t.weight;
-
-        	if (t == Experiment.YEAST_FERMENTATION && hasSeed) {
-        		weight -= 7;
-        	}
-
+        	
         	System.out.print(t.name);
         	System.out.print(" (Weight: " + weight);
         	System.out.println(" | Rating: " + t.rating + ")");
