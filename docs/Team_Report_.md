@@ -107,12 +107,12 @@ We would probably communicate how we are implementing the changes to each other 
 We learned  that it is a good idea to really think about how one should optimize their problem. It can depend on the size but it seems like coming up with a solution that utilizes dynamic programming generally seems like the way to go when trying to optimize stuff. However if the data you are trying to optimize is not very large it seems that using a brute force strategy is a pretty nice way to get an optimized solution fast. However if you don’t need your optimization to be meet the goal 100% the greedy strategies are a great way to get your optimization fast as well. It really depends on what you are optimizing what strategy you should use.
 
 
-## **Summary of Work Done / Lessons Learned** – one short paragraph reflecting on what worked, what didn't, what was most interesting, and how it helped your understanding.
+## **Summary of Work Done / Lessons Learned**
 
 When deciding what to store our 12 values as in our code we almost used enumerations, However this may have led to the code not being that testable since there could not have been new enumerations created of the same type so we decided to use records instead so learning about how those work was certainly interesting. Also We decided to keep all of our code mostly in one class although we did end up with one helper class for the dynamic solution. This probably could have been split up into multiple classes but at the end of the day it may have just ended up making our code more bloated than it needed to be. Overall we are all happy with how our project turned out.
 
 
-**Sources**
+## **Sources**
 GeeksforGeeks. “Brute Force Approach and Its Pros and Cons.” GeeksforGeeks, May 2021, www.geeksforgeeks.org/dsa/brute-force-approach-and-its-pros-and-cons/. Accessed 11 Nov. 2026.
 
 ———. “Dynamic Programming or DP.” GeeksforGeeks, 9 Feb. 2024, www.geeksforgeeks.org/dsa/dynamic-programming/. Accessed 11 Nov. 2026.
