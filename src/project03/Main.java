@@ -396,36 +396,35 @@ public class Main {
     }
 
     void main() {
-        Main program = new Main();
         final int MAX_WEIGHT = 700;
 
         System.out.println("Project 3 - Knapsack Optimization");
         System.out.println("Maximum Weight: " + MAX_WEIGHT + " kg");
 
         // Greedy strategies
-        Experiment[] ratingFirst = program.greedy(
+        Experiment[] ratingFirst = greedy(
         		EXPERIMENTS,
                 Comparator.comparingInt(Experiment::rating).reversed(),
                 700);
 
-        Experiment[] weightFirst = program.greedy(
+        Experiment[] weightFirst = greedy(
         		EXPERIMENTS,
                 Comparator.comparingInt(Experiment::weight),
                 700);
 
-        Experiment[] ratioFirst = program.greedy(
+        Experiment[] ratioFirst = greedy(
         		EXPERIMENTS,
                 Comparator.comparingDouble(Experiment::ratio).reversed(),
                 700);
 
         System.out.println("\n--- Highest Rating First ---");
-        program.printResult(ratingFirst);
+        printResult(ratingFirst);
 
         System.out.println("\n--- Lightest Weight First ---");
-        program.printResult(weightFirst);
+        printResult(weightFirst);
 
         System.out.println("\n--- Best Ratio First ---");
-        program.printResult(ratioFirst);
+        printResult(ratioFirst);
 
         // Brute force
         Experiment[][] topThree = bruteForce(EXPERIMENTS, MAX_WEIGHT, 3);
@@ -442,14 +441,14 @@ public class Main {
                 System.out.println("Optimal Solution");
             }
 
-            program.printResult(topThree[i]);
+            printResult(topThree[i]);
         }
 
         // Dynamic
         System.out.println("\n--- Dynamic ---");
 
         Experiment[] dynamicResult = dynamic(EXPERIMENTS, MAX_WEIGHT, 1)[0];
-        program.printResult(dynamicResult);
+        printResult(dynamicResult);
 
         // Comparison
         System.out.println("\n--- Comparison ---");
@@ -459,10 +458,10 @@ public class Main {
         System.out.printf("%-25s %10s %10s %10s%n",
                 "Strategy", "Weight", "Rating", "Optimal");
 
-        program.printSummary("Highest Rating", ratingFirst, optimalRating);
-        program.printSummary("Lightest Weight", weightFirst, optimalRating);
-        program.printSummary("Best Ratio", ratioFirst, optimalRating);
-        program.printSummary("Brute Force", topThree[0], optimalRating);
-        program.printSummary("Dynamic", dynamicResult, optimalRating);
+        printSummary("Highest Rating", ratingFirst, optimalRating);
+        printSummary("Lightest Weight", weightFirst, optimalRating);
+        printSummary("Best Ratio", ratioFirst, optimalRating);
+        printSummary("Brute Force", topThree[0], optimalRating);
+        printSummary("Dynamic", dynamicResult, optimalRating);
     }
 }

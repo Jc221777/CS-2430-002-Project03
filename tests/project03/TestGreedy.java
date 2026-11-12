@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A test class that tests the functionality of the greedy method
- * <p>
+ *
  * Team 03
  * Jasey Christensen, Thaddeus Schlep & Tristan Taj
  * CS 2430, section 002

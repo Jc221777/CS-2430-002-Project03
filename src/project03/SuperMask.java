@@ -1,7 +1,5 @@
 package project03;
 
-
-
 /**
  *A class for bit mask scanning.
  * SuperMask provides and efficient way to check if any bitset previously added is present in a match bitset. Constant
