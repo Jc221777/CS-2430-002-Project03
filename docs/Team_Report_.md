@@ -187,15 +187,62 @@ We verified the correctness of our algorithms by writing tests that checked spec
 
 
 
-1. **Weight-based selection:** Which experiments were selected? Total weight? Total rating? **(This will be answered by Tristan)**
+### 1. Weight-Based Selection (Lightest Weight First)
 
+The weight based greedy strategy creates a subset with experiments with the lightest weights.
 
-2. **Rating-based selection:** Which experiments were selected? Total weight? Total rating **(This will be answered by Tristan)**
+- Seed Viability 
+- Yeast Fermentation 
+- Cloud Patterns 
+- Mice Tumors 
+- Microgravity Plant Growth 
+- Cosmic Rays (Primary Band) 
+- Sun Spots
+- Relativity 
+- Micrometeorites
+- Cosmic Rays 
 
+Total Weight: 657kg  
+Total Rating: 57 science units
 
-3. **Ratio-based selection:** Which experiments were selected? Total weight? Total rating? **(This will be done by Tristan)**
+This approach selected all the lighter experiments, leaving 43 kg of unused capacity. It achieved a rating only one point below the optimal result.
 
+### 2. Rating-Based Selection (Highest Rating First)
 
+The rating based greedy strategy creates a subset with experiments with the best rating
+
+- Solar Flares
+- Micrometeorites 
+- Binary Stars 
+- Cloud Patterns
+- Seed Viability 
+- Yeast Fermentation 
+
+Total Weight: 700kg  
+Total Rating: 39 science units
+
+This strategy used the entire weight allowance, but it produced the lowest total rating of the three greedy approaches.
+
+### 3. Ratio-Based Selection (Best Rating-to-Weight Ratio First)
+
+The ratio based greedy strategy creates a subset with experiments with the best rating to weight ratio.
+
+- Seed Viability 
+- Yeast Fermentation 
+- Cloud Patterns
+- Mice Tumors
+- Cosmic Rays (Primary Band) 
+- Relativity 
+- Microgravity Plant Growth 
+- Micrometeorites 
+- Sun Spots 
+- Cosmic Rays (Secondary Band)
+
+Total Weight: 657kg  
+
+Total Rating: 57 science units
+
+The ratio-based strategy produced the same final selection as the weight-based strategy, although the experiments were chosen in a different order. 
 ### Brute Force Optimal
 
 The brute force algorithm produced the following combination.
@@ -214,7 +261,10 @@ Total Weight: 695kg
 
 Total Rating: 58 science units
 
-5. **Greedy vs optimal:** Which greedy strategy performed best in this dataset? Why do the others miss the optimal subset? **(This will be done by Tristan)**
+### 5. Greedy vs. Optimal
+
+Both the weight based and ratio based strategies preformed the best out of the greedy strategies finding a subset with a rating off 57, but this still ends up being one point less than the optimal strategy of 58. When comparing the optimal vs the greedy result we find that that the biggest difference is that greedy chose to include the rather light Microgravity Plant Growth (75 kg , rating 5) over the much heavier but higher rated Binary Stars (203 kg, rating 8). This small swap increased to weight by a full 38 kg but also raises the rating by one point while still remaining under the limit. The greedy strategies misses this opportunity because it is making its selection based off a fixed priority, rather than looking at all possible solutions. This demonstrates that a greedy solution can't fully taken into account all the information required to find the optimal solution leading to it being very close but note quite there.
+
 
 
 ### Dynamic Programming
