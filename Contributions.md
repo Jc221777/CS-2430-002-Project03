@@ -11,6 +11,14 @@ Communications lead
 
 ## Tristan
 
+Implementation lead
+
+- Implemented greedy algorithms
+- Implemented main method
+- contributed to the team report
+- contributed to the team video
+
+
 ## Thaddeus
 
 Verification lead
