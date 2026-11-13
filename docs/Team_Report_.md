@@ -225,7 +225,7 @@ Our dynamic programming approach stores subproblems in a `SuperMask`. Any subpro
 
 1.  **What changed:**
 
-    The first thing that changed was that our set of records had to have the element `COSMIC_RAYS_SECONDARY_BAND` added to it. Next we made a boolean function `isSolar` and included the three solar experiments within to track how many solar experiments are included within our subset. Next was to change how the greedy method functioned. It still would sort items based on the `Comparator` passed into it but now the items would pass through filters to ensure the rules of the change request were enforced before being added to the subset.
+    The first thing that changed was that our set of records had to have the element `COSMIC_RAYS_SECONDARY_BAND` added to it. Next we made a boolean function `isSolar` and included the three solar experiments within to track how many solar experiments are included within our subset. Next was to change how the greedy method functioned. It still would sort items based on the `Comparator` passed into it but now the items would pass through filters to ensure the rules of the change request were enforced before being added to the subset. for the `bruteForce` function we did much of the same by adding filters that will prune out items according to the change request as well as change attributes of elements when required. the `dynamic` approach works the exact same as the `bruteForce`
 
 2.  **What did not change:**
 
